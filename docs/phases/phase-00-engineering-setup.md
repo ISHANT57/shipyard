@@ -43,17 +43,17 @@ technical decisions (language, architecture). Phase 00 is process only.
 - [x] `gh repo create`, public, connected as `origin`
 - [x] Labels, milestones created
 - [x] Issue #1 opened, branch created and linked
-- [ ] Product docs (vision, problem, goals, non-goals)
-- [ ] CONTRIBUTING.md, SECURITY.md, CHANGELOG.md
-- [ ] Phase tracker + all phase files (this file + 01-14 outlines)
-- [ ] ADR README + template
-- [ ] Learning docs (git, github, troubleshooting) seeded
-- [ ] GitHub templates: PR template, issue forms, CODEOWNERS, dependabot
-- [ ] First CI workflow (docs lint)
-- [ ] CLAUDE.md, AGENTS.md
-- [ ] Push, PR, review, merge
-- [ ] Branch protection / ruleset on `main`
-- [ ] Phase closeout report
+- [x] Product docs (vision, problem, goals, non-goals)
+- [x] CONTRIBUTING.md, SECURITY.md, CHANGELOG.md
+- [x] Phase tracker + all phase files (this file + 01-14 outlines)
+- [x] ADR README + template
+- [x] Learning docs (git, github, troubleshooting) seeded
+- [x] GitHub templates: PR template, issue forms, CODEOWNERS, dependabot
+- [x] First CI workflow (docs lint)
+- [x] CLAUDE.md, AGENTS.md
+- [x] Push, PR, review, merge
+- [x] Branch protection / ruleset on `main`
+- [x] Phase closeout report
 
 ## Expected files
 
@@ -104,4 +104,72 @@ All tasks checked, phase closeout report written below, tracker updated.
 
 ## Phase closeout report
 
-Not yet written — fill in only once Phase 00 is fully done.
+**What I built.** A professionally structured empty repository: product
+docs (vision/problem/goals/non-goals), a 15-phase plan with acceptance
+criteria per phase, an ADR process, CONTRIBUTING/SECURITY/CHANGELOG,
+GitHub issue forms and a PR template, CODEOWNERS, Dependabot, a docs CI
+workflow (markdownlint + lychee), and CLAUDE.md/AGENTS.md governing how
+work proceeds from here. Proved the full GitHub Flow end-to-end: issue ->
+branch -> commits -> PR -> CI -> merge -> branch deletion, three times
+over (the main PR, and two Dependabot dependency-bump PRs). Protected
+`main` with a ruleset (PR required, `lint-and-links` check required,
+branch must be up to date, no force-push, no deletion).
+
+**What I learned.** Git's object model (blob/tree/commit/ref) inspected
+directly with `cat-file`; staging vs committing; `git rebase -i` for
+rewording history before a push; remotes and upstream tracking; the
+difference between Git and GitHub; issues, labels, milestones, project
+boards; `gh` as a thin wrapper over GitHub's REST API (no native
+`gh milestone`, so `gh api` was used directly); PR templates and required
+status checks; `strict_required_status_checks_policy` and why a PR can
+show green CI yet still be blocked from merging until its branch is
+resynced with a moved base; Dependabot as a real, automated contributor
+going through the same protected pipeline as manual work.
+
+**Decisions made.** No ADR was written — Phase 00 was deliberately process
+only, no technical trade-off big enough to warrant one. The one real
+judgment call (CLAUDE.md vs AGENTS.md split: AI-assistant behavior vs
+tool-agnostic repo conventions) is documented in each file's own opening
+paragraph rather than a separate ADR, since it isn't a reversible-cost
+engineering decision.
+
+**What failed / what I fixed.** CI failed twice on the first PR: 13
+markdownlint errors (missing fence languages, missing blank lines around
+lists/fences, an emphasis-only line flagged as a heading) — fixed by
+editing the actual docs, not by weakening the lint config. Then a lychee
+flag (`--exclude-mail`) didn't exist in the pinned action version — fixed
+by removing it (mail-link exclusion is lychee's default behavior anyway).
+Later, the markdownlint-cli2-action Dependabot bump (v18 -> v24) exposed
+that a locally-run newer markdownlint-cli2 enforces an extra rule
+(`MD060`, table column spacing) that CI's older pinned version didn't —
+fixed the one affected table regardless, since it was a real formatting
+inconsistency, and confirmed CI stayed green after the bump merged.
+
+**Tests passed.** No executable tests in this phase (none required — see
+Acceptance criteria). Verification was procedural: CI green on every
+merged PR, issue #1 and #5 closed automatically via `Fixes #`, and the
+ruleset demonstrably blocked a stale-branch merge (PR #4) until synced.
+
+**Git concepts used.** `init`, `add`, `diff --staged`, `commit`, `log`,
+`show`, `cat-file -p`, `remote -v`, `push -u`, `branch -vv`,
+`rebase -i` (reword), `switch`, `fetch --prune`, `branch -d`.
+
+**GitHub concepts used.** Issues, labels, milestones, `gh issue develop`,
+PR templates, issue forms, CODEOWNERS, Dependabot, required status
+checks, branch rulesets (`gh api repos/.../rulesets`), squash merge,
+`gh pr checks --watch`, `pulls/{n}/update-branch`.
+
+**What remains.** A GitHub Projects board (Backlog/Ready/In
+Progress/Review/Blocked/Done) was planned but not created — deferred, not
+blocking; can be added anytime without affecting the workflow already
+proven. The manual "push directly to `main` gets rejected" demonstration
+was superseded by a stronger real proof (the stale-branch block on PR #4)
+and was not additionally run.
+
+**Technical debt.** None accepted yet — no application code exists to
+carry debt.
+
+**Next phase.** [Phase 01 — Architecture](phase-01-architecture.md):
+requirements, system diagrams, threat model, and the first real ADRs
+(language choice, monorepo layout, queue technology, execution isolation,
+artifact storage).

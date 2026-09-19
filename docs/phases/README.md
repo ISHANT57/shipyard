@@ -4,17 +4,17 @@ This file is the single source of truth for "what's next". Read it before
 asking; update it before ending any session of work.
 
 ```text
-CURRENT PHASE:     00 — Engineering Setup
-CURRENT TASK:      Writing phase 00 documentation and GitHub scaffolding
-CURRENT BRANCH:    docs/issue-1-engineering-foundation
-CURRENT ISSUE:     #1
-CURRENT OBJECTIVE: Professionally structured empty repository, real
-                    GitHub workflow proven end-to-end (issue -> branch ->
-                    PR -> CI -> review -> merge), main branch protected.
+CURRENT PHASE:     01 — Architecture
+CURRENT TASK:      Not yet started
+CURRENT BRANCH:    main
+CURRENT ISSUE:     None open yet for Phase 01
+CURRENT OBJECTIVE: Requirements, system diagrams, threat model, and the
+                    first real ADRs (Go, monorepo layout, Postgres as
+                    queue, Docker as execution isolation, MinIO artifacts).
 BLOCKERS:          None
-NEXT ACTION:       Finish remaining phase 00 files (ADR template,
-                    learning docs, GitHub templates, CI workflow, CLAUDE.md,
-                    AGENTS.md), commit in slices, push, open PR.
+NEXT ACTION:       Open the first Phase 01 issue and start with the
+                    system-overview diagram before any ADR — see
+                    phase-01-architecture.md.
 ```
 
 ## Milestone map
