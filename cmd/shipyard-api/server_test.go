@@ -96,7 +96,7 @@ func TestGracefulShutdown_WaitsForInFlightRequest(t *testing.T) {
 			reqDone <- result{err: err}
 			return
 		}
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		body, _ := io.ReadAll(resp.Body)
 		reqDone <- result{status: resp.StatusCode, body: string(body)}
 	}()
