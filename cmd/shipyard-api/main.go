@@ -4,6 +4,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -11,6 +12,7 @@ import (
 	"syscall"
 
 	"github.com/ISHANT57/shipyard/internal/config"
+	"github.com/ISHANT57/shipyard/internal/store"
 )
 
 func main() {
@@ -38,9 +40,15 @@ func run(cfg config.Config, logger *slog.Logger) error {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
+	s, err := store.New(ctx, cfg.DatabaseURL)
+	if err != nil {
+		return fmt.Errorf("connecting to database: %w", err)
+	}
+	defer s.Close()
+
 	srv := &http.Server{
 		Addr:    cfg.Addr,
-		Handler: newMux(logger),
+		Handler: newMux(logger, s),
 	}
 
 	serverErr := make(chan error, 1)

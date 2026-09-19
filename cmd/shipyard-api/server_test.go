@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"io"
 	"log/slog"
 	"net"
@@ -9,14 +11,35 @@ import (
 	"net/http/httptest"
 	"testing"
 	"time"
+
+	"github.com/ISHANT57/shipyard/internal/store"
+	"github.com/ISHANT57/shipyard/internal/testdb"
 )
 
 func discardLogger() *slog.Logger {
 	return slog.New(slog.NewTextHandler(io.Discard, nil))
 }
 
+// newTestStoreAndMux gives each test its own real, migrated database
+// (via internal/testdb) and the actual production mux wired against it —
+// these tests exercise real wiring (config -> store -> handlers), not a
+// stand-in, which is exactly the part of cmd/shipyard-api a plain unit
+// test on handlers.go alone would not cover.
+func newTestStoreAndMux(t *testing.T) (*store.Store, http.Handler) {
+	t.Helper()
+	dsn := testdb.NewPostgres(t)
+
+	s, err := store.New(context.Background(), dsn)
+	if err != nil {
+		t.Fatalf("store.New() error = %v", err)
+	}
+	t.Cleanup(s.Close)
+
+	return s, newMux(discardLogger(), s)
+}
+
 func TestHealthAndReadyEndpoints(t *testing.T) {
-	mux := newMux(discardLogger())
+	_, mux := newTestStoreAndMux(t)
 
 	cases := []struct {
 		method string
@@ -44,7 +67,7 @@ func TestHealthAndReadyEndpoints(t *testing.T) {
 }
 
 func TestHealthz_WrongMethodNotAllowed(t *testing.T) {
-	mux := newMux(discardLogger())
+	_, mux := newTestStoreAndMux(t)
 
 	req := httptest.NewRequest(http.MethodPost, "/healthz", nil)
 	rec := httptest.NewRecorder()
@@ -55,6 +78,84 @@ func TestHealthz_WrongMethodNotAllowed(t *testing.T) {
 	// method for a registered path falls through to its default 405.
 	if rec.Code != http.StatusMethodNotAllowed {
 		t.Errorf("POST /healthz: status = %d, want %d", rec.Code, http.StatusMethodNotAllowed)
+	}
+}
+
+func TestCreateProjectAndPipeline_EndToEnd(t *testing.T) {
+	_, mux := newTestStoreAndMux(t)
+
+	// Create a project through the real HTTP handler, not store directly
+	// — this exercises JSON decoding, validation, and encoding together.
+	projBody, _ := json.Marshal(createProjectRequest{Name: "shipyard", RepoURL: "https://github.com/ISHANT57/shipyard"})
+	req := httptest.NewRequest(http.MethodPost, "/projects", bytes.NewReader(projBody))
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusCreated {
+		t.Fatalf("POST /projects: status = %d, body = %s", rec.Code, rec.Body.String())
+	}
+	var proj projectResponse
+	if err := json.NewDecoder(rec.Body).Decode(&proj); err != nil {
+		t.Fatalf("decoding project response: %v", err)
+	}
+	if proj.ID == "" {
+		t.Fatal("project response has empty ID")
+	}
+
+	// Submit a pipeline for it, twice, with the same idempotency key.
+	pipeBody, _ := json.Marshal(createPipelineRequest{ProjectID: proj.ID, IdempotencyKey: "e2e-key"})
+
+	req1 := httptest.NewRequest(http.MethodPost, "/pipelines", bytes.NewReader(pipeBody))
+	rec1 := httptest.NewRecorder()
+	mux.ServeHTTP(rec1, req1)
+	if rec1.Code != http.StatusCreated {
+		t.Fatalf("first POST /pipelines: status = %d, body = %s", rec1.Code, rec1.Body.String())
+	}
+	var first pipelineResponse
+	_ = json.NewDecoder(rec1.Body).Decode(&first)
+
+	req2 := httptest.NewRequest(http.MethodPost, "/pipelines", bytes.NewReader(pipeBody))
+	rec2 := httptest.NewRecorder()
+	mux.ServeHTTP(rec2, req2)
+	// Second submission with the same key: same pipeline, but 200 (not
+	// created), not 201 — the status code itself proves the endpoint
+	// distinguishes "created" from "already existed".
+	if rec2.Code != http.StatusOK {
+		t.Fatalf("second POST /pipelines: status = %d, want %d, body = %s", rec2.Code, http.StatusOK, rec2.Body.String())
+	}
+	var second pipelineResponse
+	_ = json.NewDecoder(rec2.Body).Decode(&second)
+
+	if second.ID != first.ID {
+		t.Errorf("second submission returned a different pipeline: got %s, want %s", second.ID, first.ID)
+	}
+}
+
+func TestCreatePipeline_UnknownProjectReturns404(t *testing.T) {
+	_, mux := newTestStoreAndMux(t)
+
+	body, _ := json.Marshal(createPipelineRequest{ProjectID: "00000000-0000-0000-0000-000000000000", IdempotencyKey: "some-key"})
+	req := httptest.NewRequest(http.MethodPost, "/pipelines", bytes.NewReader(body))
+	rec := httptest.NewRecorder()
+
+	mux.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusNotFound {
+		t.Errorf("status = %d, want %d, body = %s", rec.Code, http.StatusNotFound, rec.Body.String())
+	}
+}
+
+func TestCreateProject_MissingFieldsReturns400(t *testing.T) {
+	_, mux := newTestStoreAndMux(t)
+
+	body, _ := json.Marshal(createProjectRequest{Name: "", RepoURL: ""})
+	req := httptest.NewRequest(http.MethodPost, "/projects", bytes.NewReader(body))
+	rec := httptest.NewRecorder()
+
+	mux.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusBadRequest {
+		t.Errorf("status = %d, want %d", rec.Code, http.StatusBadRequest)
 	}
 }
 

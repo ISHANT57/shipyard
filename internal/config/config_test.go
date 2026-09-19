@@ -16,6 +16,9 @@ func TestLoad_Defaults(t *testing.T) {
 	if cfg.ShutdownTimeout != 10*time.Second {
 		t.Errorf("ShutdownTimeout = %s, want 10s", cfg.ShutdownTimeout)
 	}
+	if cfg.DatabaseURL == "" {
+		t.Error("DatabaseURL default is empty, want a usable local connection string")
+	}
 }
 
 func TestLoad_AddrFromEnv(t *testing.T) {
@@ -40,22 +43,27 @@ func TestValidate(t *testing.T) {
 	}{
 		{
 			name:    "valid config",
-			cfg:     Config{Addr: ":8080", ShutdownTimeout: time.Second},
+			cfg:     Config{Addr: ":8080", ShutdownTimeout: time.Second, DatabaseURL: "postgres://x"},
 			wantErr: false,
 		},
 		{
 			name:    "empty addr",
-			cfg:     Config{Addr: "", ShutdownTimeout: time.Second},
+			cfg:     Config{Addr: "", ShutdownTimeout: time.Second, DatabaseURL: "postgres://x"},
 			wantErr: true,
 		},
 		{
 			name:    "zero shutdown timeout",
-			cfg:     Config{Addr: ":8080", ShutdownTimeout: 0},
+			cfg:     Config{Addr: ":8080", ShutdownTimeout: 0, DatabaseURL: "postgres://x"},
 			wantErr: true,
 		},
 		{
 			name:    "negative shutdown timeout",
-			cfg:     Config{Addr: ":8080", ShutdownTimeout: -time.Second},
+			cfg:     Config{Addr: ":8080", ShutdownTimeout: -time.Second, DatabaseURL: "postgres://x"},
+			wantErr: true,
+		},
+		{
+			name:    "empty database url",
+			cfg:     Config{Addr: ":8080", ShutdownTimeout: time.Second, DatabaseURL: ""},
 			wantErr: true,
 		},
 	}

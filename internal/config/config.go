@@ -19,6 +19,12 @@ type Config struct {
 	// ShutdownTimeout bounds how long the server waits for in-flight
 	// requests to finish during a graceful shutdown before giving up.
 	ShutdownTimeout time.Duration
+
+	// DatabaseURL is a PostgreSQL connection string. The default points
+	// at the local docker-compose stack (deployments/compose) so running
+	// locally needs no environment setup; any real environment must
+	// override it explicitly.
+	DatabaseURL string
 }
 
 // Load reads configuration from the environment and validates it.
@@ -29,6 +35,7 @@ func Load() (Config, error) {
 	cfg := Config{
 		Addr:            getEnv("SHIPYARD_API_ADDR", ":8080"),
 		ShutdownTimeout: 10 * time.Second,
+		DatabaseURL:     getEnv("SHIPYARD_DATABASE_URL", "postgres://shipyard:shipyard@localhost:5433/shipyard?sslmode=disable"),
 	}
 
 	if err := cfg.validate(); err != nil {
@@ -44,6 +51,9 @@ func (c Config) validate() error {
 	}
 	if c.ShutdownTimeout <= 0 {
 		return fmt.Errorf("shutdown timeout must be positive, got %s", c.ShutdownTimeout)
+	}
+	if c.DatabaseURL == "" {
+		return fmt.Errorf("SHIPYARD_DATABASE_URL must not be empty")
 	}
 	return nil
 }
