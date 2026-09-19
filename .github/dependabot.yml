@@ -1,0 +1,9 @@
+version: 2
+updates:
+  # Keep the CI workflow actions themselves current and patched.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+# Go modules and npm entries are added once cmd/ and web/ exist (Phase 02+),
+# so Dependabot has an actual manifest to scan.
