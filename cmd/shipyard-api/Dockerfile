@@ -1,7 +1,10 @@
 # syntax=docker/dockerfile:1
 
 # --- Build stage: has the Go toolchain, produces one static binary ---
-FROM golang:1.24-bookworm AS builder
+# Must satisfy go.mod's `go` directive (>= 1.25.11, pulled in by pgx v5) —
+# the official golang images set GOTOOLCHAIN=local, so an image below the
+# required version fails outright instead of auto-downloading a newer one.
+FROM golang:1.26-bookworm AS builder
 WORKDIR /src
 
 # Copy module files first and download deps before the rest of the

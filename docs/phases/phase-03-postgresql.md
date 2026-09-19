@@ -38,3 +38,30 @@ First tagged release: `v0.1.0` via `gh release create v0.1.0
 
 Migrations are reversible (up and down both tested). Duplicate-submission
 test passes. `v0.1.0` is published on GitHub.
+
+## Tasks
+
+- [x] ADR-007: migration tool (golang-migrate)
+- [x] `docker-compose.yml` with PostgreSQL (moved off port 5432 to avoid
+      colliding with an unrelated local Postgres instance)
+- [x] Migration 000001: `projects`, `pipelines`, `stages`, `jobs`,
+      `job_attempts`, `audit_log` — verified up/down/up against a real
+      database, not just written
+- [x] `internal/store`: repository layer over `pgx`, `ErrNotFound`
+      sentinel, idempotent `CreatePipeline`
+- [x] `internal/testdb`: shared Testcontainers-Go helper (real Postgres,
+      real migrations) reused by both `internal/store` and
+      `cmd/shipyard-api` tests
+- [x] API: `POST /projects`, `POST /pipelines` (201 on create, 200 on
+      idempotent replay); `/readyz` now actually checks the database
+- [x] Integration tests: constraint violations, idempotent replay,
+      10-way concurrent duplicate submission (race-detector clean)
+- [x] Live smoke test against the real compose database (not just tests)
+- [ ] Push, PR, CI, merge
+- [ ] Release v0.1.0
+- [ ] Phase closeout report
+
+## Phase closeout report
+
+Not yet written — fill in only once Phase 03 is fully done (after merge
+and release).

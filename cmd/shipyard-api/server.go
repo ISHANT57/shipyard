@@ -5,6 +5,8 @@ import (
 	"encoding/hex"
 	"log/slog"
 	"net/http"
+
+	"github.com/ISHANT57/shipyard/internal/store"
 )
 
 // requestIDKey is an unexported type for the context key, following Go's
@@ -18,7 +20,7 @@ type requestIDKey struct{}
 // this is the "accept interfaces, return structs" idiom in reverse: the
 // caller (main, or a test) only ever needs to call ServeHTTP, so the
 // interface is the honest return type.
-func newMux(logger *slog.Logger) http.Handler {
+func newMux(logger *slog.Logger, s *store.Store) http.Handler {
 	mux := http.NewServeMux()
 
 	// Liveness: "is the process running and able to respond at all".
@@ -29,14 +31,24 @@ func newMux(logger *slog.Logger) http.Handler {
 		_, _ = w.Write([]byte("ok"))
 	})
 
-	// Readiness: "is the process ready to accept real traffic". Today
-	// this is identical to liveness because there are no dependencies
-	// yet (Phase 03 adds PostgreSQL, at which point /readyz starts
-	// checking the database connection and /healthz still won't).
+	// Readiness: "is the process ready to accept real traffic". Now that
+	// PostgreSQL exists (Phase 03), readiness actually checks it —
+	// liveness deliberately still does not, so a database outage gets
+	// this process taken out of the load balancer, not killed and
+	// restarted by the orchestrator for no reason.
 	mux.HandleFunc("GET /readyz", func(w http.ResponseWriter, r *http.Request) {
+		if err := s.Ping(r.Context()); err != nil {
+			logger.Error("readiness check failed", "error", err)
+			w.WriteHeader(http.StatusServiceUnavailable)
+			_, _ = w.Write([]byte("not ready"))
+			return
+		}
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("ok"))
 	})
+
+	mux.HandleFunc("POST /projects", handleCreateProject(s, logger))
+	mux.HandleFunc("POST /pipelines", handleCreatePipeline(s, logger))
 
 	return withRequestID(withLogging(mux, logger))
 }
