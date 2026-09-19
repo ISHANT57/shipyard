@@ -92,8 +92,8 @@ to building, not importing.
 ## Consequences
 
 - Delivery semantics are **at-least-once**, with idempotent processing at
-  the consumer — never a claim of exactly-once job execution (see
-  [ADR-008](ADR-008-delivery-semantics.md), Phase 04).
+  the consumer — never a claim of exactly-once job execution (formalized
+  in ADR-008, Phase 04, once that phase begins).
 - The job row carries not just "what to run" but also the caller's trace
   context, so a trace survives the queue hop (see
   [docs/architecture/data-flow.md](../architecture/data-flow.md)).
