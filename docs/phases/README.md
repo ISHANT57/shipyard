@@ -3,7 +3,7 @@
 This file is the single source of truth for "what's next". Read it before
 asking; update it before ending any session of work.
 
-```
+```text
 CURRENT PHASE:     00 — Engineering Setup
 CURRENT TASK:      Writing phase 00 documentation and GitHub scaffolding
 CURRENT BRANCH:    docs/issue-1-engineering-foundation
@@ -20,7 +20,7 @@ NEXT ACTION:       Finish remaining phase 00 files (ADR template,
 ## Milestone map
 
 | Milestone | Phases | Release |
-|---|---|---|
+| --------- | ------ | ------- |
 | v0.1 Foundation | 00–03 | v0.1.0 |
 | v0.2 Pipeline Engine | 04–05 | v0.2.0 |
 | v0.3 Secure Execution | 06–08 | v0.3.0 |
@@ -47,7 +47,7 @@ NEXT ACTION:       Finish remaining phase 00 files (ADR template,
 
 ## Standard loop for every task, in every phase
 
-```
+```text
 Concept taught
   -> design note (+ ADR if a real decision)
   -> gh issue create

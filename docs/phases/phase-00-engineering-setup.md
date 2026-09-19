@@ -104,4 +104,4 @@ All tasks checked, phase closeout report written below, tracker updated.
 
 ## Phase closeout report
 
-*(filled in when Phase 00 is fully done — do not fill prematurely)*
+Not yet written — fill in only once Phase 00 is fully done.

@@ -14,15 +14,19 @@ to install yet in Phase 00.
 1. Every change starts as a GitHub issue, labeled and (once past Phase 00)
    assigned a milestone.
 2. Branch from `main`:
-   ```
+
+   ```text
    <type>/issue-<number>-<short-slug>
    ```
+
    `type` is one of `feat`, `fix`, `docs`, `chore`, `security`, `test`,
    `refactor`, `ci`. Example: `feat/issue-42-postgres-job-claim`.
 3. Commit using [Conventional Commits](https://www.conventionalcommits.org/):
-   ```
+
+   ```text
    <type>(<scope>): <short summary>
    ```
+
    Examples: `feat(queue): add durable job claiming`,
    `fix(worker): recover expired leases`,
    `docs(adr): document postgres queue decision`.

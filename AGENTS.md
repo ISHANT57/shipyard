@@ -7,7 +7,7 @@ is writing the code.
 
 ## Repository layout (target — built incrementally by phase)
 
-```
+```text
 cmd/                  entry points: shipyard-api, shipyard-worker, shipyard (CLI)
 internal/             application code, not importable outside this module
   api/ config/ store/ queue/ pipeline/ detect/ sandbox/
@@ -61,6 +61,7 @@ Testcontainers, not mocks, wherever feasible.
 ## Review checklist
 
 Before merging any PR:
+
 - [ ] Correctness — does it do what the issue asked?
 - [ ] Concurrency — any new shared state? Race-checked?
 - [ ] Security — new input surface validated? Least privilege held?

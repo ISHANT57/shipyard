@@ -3,7 +3,7 @@
 Every real problem hit while building Shipyard is logged here, honestly —
 including the dumb ones. Format:
 
-```
+```text
 ## <short title>
 
 Problem:

@@ -23,6 +23,7 @@ Shipyard's workers use it, then explain what happens when two workers race
 to claim the same row.
 
 Before writing code for a meaningful subsystem:
+
 1. Explain the problem.
 2. Explain the design and the real alternatives.
 3. Explain expected failure modes.
