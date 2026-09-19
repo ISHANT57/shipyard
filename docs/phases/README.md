@@ -4,18 +4,18 @@ This file is the single source of truth for "what's next". Read it before
 asking; update it before ending any session of work.
 
 ```text
-CURRENT PHASE:     03 — PostgreSQL
+CURRENT PHASE:     04 — Durable Queue
 CURRENT TASK:      Not yet started
 CURRENT BRANCH:    main
-CURRENT ISSUE:     None open yet for Phase 03
-CURRENT OBJECTIVE: Schema + migrations + internal/store: projects,
-                    pipelines, stages, jobs, job_attempts, audit_log.
-                    Idempotent pipeline submission. First release, v0.1.0.
-BLOCKERS:          None. Docker confirmed working (used in Phase 02);
-                    PostgreSQL will run via docker compose.
-NEXT ACTION:       ADR-007 (migration tool: goose vs golang-migrate),
-                    then docker-compose.yml with Postgres — see
-                    phase-03-postgresql.md.
+CURRENT ISSUE:     None open yet for Phase 04
+CURRENT OBJECTIVE: internal/queue on top of the jobs table: claim via
+                    SELECT ... FOR UPDATE SKIP LOCKED, leases, heartbeats,
+                    exponential backoff + jitter, DLQ, stale-lease reaper.
+                    cmd/shipyard-worker with a bounded worker pool.
+BLOCKERS:          None.
+NEXT ACTION:       ADR-008 (delivery semantics), ADR-009 (claim
+                    strategy), ADR-010 (retry policy) — then
+                    internal/queue — see phase-04-durable-queue.md.
 ```
 
 ## Milestone map
