@@ -34,3 +34,4 @@ folder.
 | [003](ADR-003-postgres-as-queue.md) | PostgreSQL as the job queue | Accepted |
 | [004](ADR-004-docker-execution-isolation.md) | Docker as execution isolation | Accepted |
 | [005](ADR-005-minio-for-artifacts.md) | MinIO for artifact storage | Accepted |
+| [006](ADR-006-http-router.md) | HTTP router (stdlib) | Accepted |
