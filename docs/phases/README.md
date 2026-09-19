@@ -4,17 +4,18 @@ This file is the single source of truth for "what's next". Read it before
 asking; update it before ending any session of work.
 
 ```text
-CURRENT PHASE:     01 — Architecture
+CURRENT PHASE:     02 — Go Foundation
 CURRENT TASK:      Not yet started
 CURRENT BRANCH:    main
-CURRENT ISSUE:     None open yet for Phase 01
-CURRENT OBJECTIVE: Requirements, system diagrams, threat model, and the
-                    first real ADRs (Go, monorepo layout, Postgres as
-                    queue, Docker as execution isolation, MinIO artifacts).
-BLOCKERS:          None
-NEXT ACTION:       Open the first Phase 01 issue and start with the
-                    system-overview diagram before any ADR — see
-                    phase-01-architecture.md.
+CURRENT ISSUE:     None open yet for Phase 02
+CURRENT OBJECTIVE: A minimal cmd/shipyard-api skeleton in Go: modules,
+                    config, /healthz + /readyz, graceful shutdown, a real
+                    CI workflow (fmt, vet, lint, test -race, build), and
+                    a non-root multi-stage Dockerfile.
+BLOCKERS:          Go is not installed on this machine yet — install
+                    before starting.
+NEXT ACTION:       Install Go, then open the first Phase 02 issue and
+                    start with `go mod init` — see phase-02-go-foundation.md.
 ```
 
 ## Milestone map
