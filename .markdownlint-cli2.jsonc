@@ -1,0 +1,12 @@
+{
+  // MD013 (line length) fights with prose docs and ADR tables; disable it.
+  // MD033 allows the few inline HTML cases Mermaid/GitHub rendering needs.
+  "config": {
+    "default": true,
+    "MD013": false,
+    "MD033": false,
+    "MD041": false
+  },
+  "globs": ["**/*.md"],
+  "ignores": ["node_modules", "web/dist"]
+}
