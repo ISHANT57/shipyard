@@ -35,3 +35,21 @@ conflict (staged deliberately, e.g. on the Makefile).
 API starts, shuts down cleanly on SIGTERM mid-request (proven by a test,
 not observation), CI green with the race detector enabled, container image
 runs as non-root.
+
+## Tasks
+
+- [x] `go.mod`
+- [x] `internal/config` (env-based, fail-fast validation, tested)
+- [x] `cmd/shipyard-api`: `/healthz`, `/readyz`, request-ID + logging middleware
+- [x] Graceful shutdown on SIGTERM — proven by test and by a live smoke run
+- [x] `Makefile` (fmt, fmt-check, vet, lint, test, build, clean)
+- [x] `.golangci.yml`
+- [x] `ci.yml`: gofmt check, vet, lint, `test -race -cover`, build, Docker build
+- [x] Multi-stage, non-root Dockerfile (distroless base)
+- [x] ADR-006: HTTP router
+- [ ] Push, PR, CI, merge
+- [ ] Phase closeout report
+
+## Phase closeout report
+
+Not yet written — fill in only once Phase 02 is fully done (after merge).

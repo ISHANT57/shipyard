@@ -1,0 +1,16 @@
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  default: none
+  enable:
+    - errcheck    # every returned error must be handled, not silently dropped
+    - govet       # suspicious constructs (shadowing, printf mistakes, etc.)
+    - ineffassign # assignments whose value is never used
+    - staticcheck # broad correctness/style analysis
+    - unused      # dead code
+  exclusions:
+    paths:
+      - test-fixtures
