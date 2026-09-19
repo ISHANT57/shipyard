@@ -15,6 +15,9 @@ coverage.*
 go.work
 go.work.sum
 
+# --- Stray downloads (e.g. a Go toolchain tarball pulled into the repo by mistake) ---
+*.tar.gz
+
 # --- Node / web UI ---
 node_modules/
 web/dist/
