@@ -1,0 +1,32 @@
+# --- Secrets and local configuration (never commit) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# --- Go ---
+/bin/
+/dist/
+*.exe
+*.test
+*.out
+coverage.*
+go.work
+go.work.sum
+
+# --- Node / web UI ---
+node_modules/
+web/dist/
+*.tsbuildinfo
+
+# --- Local data from docker compose volumes ---
+/.data/
+
+# --- Editors and OS ---
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
