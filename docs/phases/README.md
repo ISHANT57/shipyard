@@ -4,18 +4,18 @@ This file is the single source of truth for "what's next". Read it before
 asking; update it before ending any session of work.
 
 ```text
-CURRENT PHASE:     02 — Go Foundation
+CURRENT PHASE:     03 — PostgreSQL
 CURRENT TASK:      Not yet started
 CURRENT BRANCH:    main
-CURRENT ISSUE:     None open yet for Phase 02
-CURRENT OBJECTIVE: A minimal cmd/shipyard-api skeleton in Go: modules,
-                    config, /healthz + /readyz, graceful shutdown, a real
-                    CI workflow (fmt, vet, lint, test -race, build), and
-                    a non-root multi-stage Dockerfile.
-BLOCKERS:          Go is not installed on this machine yet — install
-                    before starting.
-NEXT ACTION:       Install Go, then open the first Phase 02 issue and
-                    start with `go mod init` — see phase-02-go-foundation.md.
+CURRENT ISSUE:     None open yet for Phase 03
+CURRENT OBJECTIVE: Schema + migrations + internal/store: projects,
+                    pipelines, stages, jobs, job_attempts, audit_log.
+                    Idempotent pipeline submission. First release, v0.1.0.
+BLOCKERS:          None. Docker confirmed working (used in Phase 02);
+                    PostgreSQL will run via docker compose.
+NEXT ACTION:       ADR-007 (migration tool: goose vs golang-migrate),
+                    then docker-compose.yml with Postgres — see
+                    phase-03-postgresql.md.
 ```
 
 ## Milestone map
