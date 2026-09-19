@@ -41,3 +41,18 @@ made without re-reading the ADR.
 ## Definition of done
 
 Diagrams render on GitHub, ADRs merged, phase closeout report written.
+
+## Tasks
+
+- [x] docs/architecture: system-overview, control-plane, execution-plane, data-flow, threat-model
+- [x] ADR-001: Go for the backend
+- [x] ADR-002: monorepo layout
+- [x] ADR-003: PostgreSQL as the job queue
+- [x] ADR-004: Docker as execution isolation (defense-in-depth)
+- [x] ADR-005: MinIO for artifact storage
+- [ ] Push, PR, CI, merge
+- [ ] Phase closeout report
+
+## Phase closeout report
+
+Not yet written — fill in only once Phase 01 is fully done (after merge).

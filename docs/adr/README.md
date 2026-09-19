@@ -27,6 +27,10 @@ folder.
 
 ## Index
 
-Filled in as ADRs are written, starting in Phase 01 (ADR-001 onward — see
-[phase-01-architecture.md](../phases/phase-01-architecture.md) for the
-planned list).
+| ADR | Title | Status |
+| --- | --- | --- |
+| [001](ADR-001-go-for-backend.md) | Go for the backend | Accepted |
+| [002](ADR-002-monorepo-layout.md) | Monorepo layout | Accepted |
+| [003](ADR-003-postgres-as-queue.md) | PostgreSQL as the job queue | Accepted |
+| [004](ADR-004-docker-execution-isolation.md) | Docker as execution isolation | Accepted |
+| [005](ADR-005-minio-for-artifacts.md) | MinIO for artifact storage | Accepted |
