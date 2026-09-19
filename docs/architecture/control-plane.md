@@ -23,7 +23,7 @@ the single most important boundary in the whole system; see
 ## Sub-components
 
 | Component | Responsibility |
-|---|---|
+| --- | --- |
 | API | HTTP surface: submissions, status queries, auth, webhooks |
 | Scheduler | Turns a pipeline spec into ready-to-run jobs, respecting the DAG (Phase 05) |
 | Policy engine | Evaluates security findings against configured thresholds -> PASS/WARN/BLOCK (Phase 07) |

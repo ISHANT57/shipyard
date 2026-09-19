@@ -28,7 +28,7 @@ folder.
 ## Index
 
 | ADR | Title | Status |
-|---|---|---|
+| --- | --- | --- |
 | [001](ADR-001-go-for-backend.md) | Go for the backend | Accepted |
 | [002](ADR-002-monorepo-layout.md) | Monorepo layout | Accepted |
 | [003](ADR-003-postgres-as-queue.md) | PostgreSQL as the job queue | Accepted |
