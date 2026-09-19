@@ -1,0 +1,16 @@
+name: Task
+description: A concrete unit of work (docs, chore, phase work)
+labels: []
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What needs to be done
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+    validations:
+      required: true
