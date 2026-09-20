@@ -77,3 +77,52 @@ func TestValidate(t *testing.T) {
 		})
 	}
 }
+
+func TestLoadWorker_Defaults(t *testing.T) {
+	cfg, err := LoadWorker()
+	if err != nil {
+		t.Fatalf("LoadWorker() returned unexpected error: %v", err)
+	}
+	if cfg.Concurrency != 4 {
+		t.Errorf("Concurrency = %d, want 4", cfg.Concurrency)
+	}
+	if cfg.ID == "" {
+		t.Error("ID default is empty, want <hostname>-<pid>")
+	}
+	if cfg.Lease != 30*time.Second || cfg.PollInterval != 2*time.Second {
+		t.Errorf("Lease/PollInterval = %s/%s, want 30s/2s", cfg.Lease, cfg.PollInterval)
+	}
+}
+
+func TestLoadWorker_FromEnv(t *testing.T) {
+	t.Setenv("SHIPYARD_WORKER_CONCURRENCY", "9")
+	t.Setenv("SHIPYARD_WORKER_LEASE", "750ms")
+	t.Setenv("SHIPYARD_WORKER_ID", "w-test")
+
+	cfg, err := LoadWorker()
+	if err != nil {
+		t.Fatalf("LoadWorker() returned unexpected error: %v", err)
+	}
+	if cfg.Concurrency != 9 || cfg.Lease != 750*time.Millisecond || cfg.ID != "w-test" {
+		t.Errorf("got %+v, want concurrency 9, lease 750ms, id w-test", cfg)
+	}
+}
+
+func TestLoadWorker_RejectsBadValues(t *testing.T) {
+	cases := []struct {
+		name, key, value string
+	}{
+		{"non-numeric concurrency", "SHIPYARD_WORKER_CONCURRENCY", "many"},
+		{"zero concurrency", "SHIPYARD_WORKER_CONCURRENCY", "0"},
+		{"unparseable duration", "SHIPYARD_WORKER_LEASE", "soon"},
+		{"negative duration", "SHIPYARD_WORKER_DRAIN_TIMEOUT", "-5s"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Setenv(tc.key, tc.value)
+			if _, err := LoadWorker(); err == nil {
+				t.Errorf("LoadWorker() with %s=%q returned nil error, want a validation error", tc.key, tc.value)
+			}
+		})
+	}
+}

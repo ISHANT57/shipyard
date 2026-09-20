@@ -5,7 +5,10 @@
     "default": true,
     "MD013": false,
     "MD033": false,
-    "MD041": false
+    "MD041": false,
+    // Keep a Changelog repeats "### Added" under every version; only
+    // duplicate headings under the SAME parent are a real problem.
+    "MD024": { "siblings_only": true }
   },
   "globs": ["**/*.md"],
   "ignores": ["node_modules", "web/dist"]

@@ -16,6 +16,8 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres" // registers the "postgres" driver scheme via init()
 	_ "github.com/golang-migrate/migrate/v4/source/file"       // registers the "file" source scheme via init()
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgxpool"
 	tcpostgres "github.com/testcontainers/testcontainers-go/modules/postgres"
 )
 
@@ -84,4 +86,32 @@ func applyMigrations(t *testing.T, dsn string) {
 	if err := m.Up(); err != nil {
 		t.Fatalf("testdb: failed to apply migrations: %v", err)
 	}
+}
+
+// SeedStage inserts the project -> pipeline -> stage chain that a job's
+// foreign key requires and returns the stage ID. Each call creates a new
+// chain, so tests can seed as many independent stages as they need.
+func SeedStage(t *testing.T, pool *pgxpool.Pool) uuid.UUID {
+	t.Helper()
+	ctx := context.Background()
+
+	var projectID, pipelineID, stageID uuid.UUID
+	if err := pool.QueryRow(ctx,
+		`INSERT INTO projects (name, repo_url) VALUES ('p', 'https://example.com/p.git') RETURNING id`,
+	).Scan(&projectID); err != nil {
+		t.Fatalf("testdb: seed project: %v", err)
+	}
+	if err := pool.QueryRow(ctx,
+		`INSERT INTO pipelines (project_id, idempotency_key) VALUES ($1, $2) RETURNING id`,
+		projectID, uuid.NewString(),
+	).Scan(&pipelineID); err != nil {
+		t.Fatalf("testdb: seed pipeline: %v", err)
+	}
+	if err := pool.QueryRow(ctx,
+		`INSERT INTO stages (pipeline_id, name) VALUES ($1, 'test') RETURNING id`,
+		pipelineID,
+	).Scan(&stageID); err != nil {
+		t.Fatalf("testdb: seed stage: %v", err)
+	}
+	return stageID
 }
