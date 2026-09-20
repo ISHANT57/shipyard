@@ -48,3 +48,6 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t shipyard-api:ci -f cmd/shipyard-api/Dockerfile .
+
+      - name: Build worker Docker image
+        run: docker build -t shipyard-worker:ci -f cmd/shipyard-worker/Dockerfile .
