@@ -35,3 +35,7 @@ folder.
 | [004](ADR-004-docker-execution-isolation.md) | Docker as execution isolation | Accepted |
 | [005](ADR-005-minio-for-artifacts.md) | MinIO for artifact storage | Accepted |
 | [006](ADR-006-http-router.md) | HTTP router (stdlib) | Accepted |
+| [007](ADR-007-migration-tool.md) | Migration tool (golang-migrate) | Accepted |
+| [008](ADR-008-delivery-semantics.md) | Delivery semantics: at-least-once, fenced | Accepted |
+| [009](ADR-009-claim-strategy.md) | Claim strategy: polling + NOTIFY hint | Accepted |
+| [010](ADR-010-retry-policy.md) | Retry policy: full-jitter backoff, DLQ as status | Accepted |
