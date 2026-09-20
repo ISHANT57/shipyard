@@ -5,17 +5,18 @@ asking; update it before ending any session of work.
 
 ```text
 CURRENT PHASE:     04 — Durable Queue
-CURRENT TASK:      Not yet started
-CURRENT BRANCH:    main
-CURRENT ISSUE:     None open yet for Phase 04
+CURRENT TASK:      Code complete; finishing verification, git drill, PR
+CURRENT BRANCH:    feat/issue-19-durable-queue
+CURRENT ISSUE:     #19
 CURRENT OBJECTIVE: internal/queue on top of the jobs table: claim via
                     SELECT ... FOR UPDATE SKIP LOCKED, leases, heartbeats,
                     exponential backoff + jitter, DLQ, stale-lease reaper.
                     cmd/shipyard-worker with a bounded worker pool.
 BLOCKERS:          None.
-NEXT ACTION:       ADR-008 (delivery semantics), ADR-009 (claim
-                    strategy), ADR-010 (retry policy) — then
-                    internal/queue — see phase-04-durable-queue.md.
+NEXT ACTION:       Run scripts/drills/bisect-drill.sh (bisect + revert),
+                    confirm the 100-run crash-recovery check, open the
+                    PR, then write the Phase 04 closeout — see
+                    phase-04-durable-queue.md.
 ```
 
 ## Milestone map
