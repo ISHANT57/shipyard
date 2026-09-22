@@ -1,5 +1,5 @@
 # CLAUDE.md
-
+https://trykuro.app/r/j6n68s
 Rules for Claude when working in this repository. This file governs
 **how I (Claude) behave here** — teaching style, decision process,
 guardrails. For repository conventions any contributor or tool should
